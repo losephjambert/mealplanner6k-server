@@ -1,12 +1,16 @@
 const express = require('express')
 const jwt = require('express-jwt')
 const jwksRsa = require('jwks-rsa')
+const graphqlHTTP = require('express-graphql')
+const schema = require('./schema/schema')
 
-const port = process.env.port || 6000
+// declare a port
+const port = process.env.port || 4000
 
+// create an instance of the app and store it in a constant
 const app = express()
 
-// auth0 configuration
+// // store auth0 configuration
 const authConfig = {
   domain: 'dev-cashstasher.auth0.com',
   audience: 'https://mealplannerapi.joseph.pizza'
@@ -26,13 +30,21 @@ const checkJwt = jwt({
   algorithm: ['RS256']
 })
 
-// endpoint that requires an access token
-
+// sample endpoint that requires an access token
 app.get('/api/external', checkJwt, (req, res) => {
-  console.log('User auth0 sub access id: ', res)
   res.send({
     msg: 'Your Access Token was successfully validated. Happy apping!'
   })
 })
 
-app.listen(port, () => console.log(`API listening on port: ${port}`))
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema,
+    graphiql: true
+  })
+)
+
+app.listen(port, () => {
+  console.log(`now tuned in to port: ${port}`)
+})
