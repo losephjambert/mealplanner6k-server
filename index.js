@@ -2,7 +2,7 @@ const express = require('express')
 const jwt = require('express-jwt')
 const jwksRsa = require('jwks-rsa')
 
-const port = process.env.port || 8000
+const port = process.env.port || 6000
 
 const app = express()
 
